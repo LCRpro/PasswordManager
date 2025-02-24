@@ -19,6 +19,21 @@ namespace PasswordManager.Web.Services
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             return await _http.GetFromJsonAsync<List<PasswordEntry>>("passwords") ?? new List<PasswordEntry>();
         }
+public async Task<bool> UpdatePassword(int id, PasswordEntry password, string token)
+{
+    _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+    Console.WriteLine($"🔄 Envoi de la requête PUT pour modifier le mot de passe ID {id}");
+
+    var response = await _http.PutAsJsonAsync($"passwords/{id}", password);
+
+    if (!response.IsSuccessStatusCode)
+    {
+        Console.WriteLine($"❌ Erreur lors de la modification : {response.StatusCode}");
+    }
+
+    return response.IsSuccessStatusCode;
+}
 
 public async Task<bool> AddPassword(PasswordEntry password, string token)
 {

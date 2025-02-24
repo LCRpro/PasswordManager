@@ -18,6 +18,31 @@ public class PasswordController : ControllerBase
         _context = context;
     }
 
+[HttpPut("{id}")]
+public async Task<IActionResult> UpdatePassword(int id, [FromBody] PasswordEntry updatedPassword)
+{
+    Console.WriteLine($"🟡 PUT /api/passwords/{id} - Modification demandée");
+
+    var existingPassword = await _context.Passwords.FindAsync(id);
+    if (existingPassword == null)
+    {
+        Console.WriteLine($"❌ Mot de passe avec ID {id} non trouvé !");
+        return NotFound();
+    }
+
+    existingPassword.Title = updatedPassword.Title;
+    existingPassword.Username = updatedPassword.Username;
+    existingPassword.EncryptedPassword = updatedPassword.EncryptedPassword;
+    existingPassword.Category = updatedPassword.Category;
+    existingPassword.CreatedAt = updatedPassword.CreatedAt; // Optionnel si on veut garder la date d'origine
+
+    await _context.SaveChangesAsync();
+
+    Console.WriteLine($"✅ Mot de passe {id} mis à jour !");
+    return NoContent();
+}
+
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PasswordEntry>>> GetPasswords()
     {
