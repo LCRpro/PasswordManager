@@ -2,16 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PasswordManager.Core;
 using PasswordManager.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PasswordManager.Api.Controllers;
 
-using Microsoft.AspNetCore.Authorization;
-
-[Authorize] 
+[Authorize]
 [Route("api/passwords")]
 [ApiController]
 public class PasswordController : ControllerBase
-
 {
     private readonly ApplicationDbContext _context;
 
@@ -23,25 +21,48 @@ public class PasswordController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PasswordEntry>>> GetPasswords()
     {
-        return await _context.Passwords.ToListAsync();
+        var passwords = await _context.Passwords.ToListAsync();
+
+        if (passwords == null || passwords.Count == 0)
+        {
+        }
+        else
+        {
+        }
+
+        return passwords;
     }
 
-    [HttpPost]
-    public async Task<ActionResult<PasswordEntry>> AddPassword(PasswordEntry password)
+[HttpPost]
+public async Task<ActionResult<PasswordEntry>> AddPassword([FromBody] PasswordEntry password)
+{
+ 
+
+    if (string.IsNullOrEmpty(password.Title) || string.IsNullOrEmpty(password.Username) || string.IsNullOrEmpty(password.EncryptedPassword))
     {
-        _context.Passwords.Add(password);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetPasswords), new { id = password.Id }, password);
+        return BadRequest("Tous les champs sont requis.");
     }
+
+    _context.Passwords.Add(password);
+    await _context.SaveChangesAsync();
+
+    return CreatedAtAction(nameof(GetPasswords), new { id = password.Id }, password);
+}
+
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePassword(int id)
     {
+
         var password = await _context.Passwords.FindAsync(id);
-        if (password == null) return NotFound();
+        if (password == null)
+        {
+            return NotFound();
+        }
 
         _context.Passwords.Remove(password);
         await _context.SaveChangesAsync();
+
         return NoContent();
     }
 }
