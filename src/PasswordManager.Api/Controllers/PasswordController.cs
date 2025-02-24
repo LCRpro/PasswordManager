@@ -5,9 +5,13 @@ using PasswordManager.Core.Models;
 
 namespace PasswordManager.Api.Controllers;
 
+using Microsoft.AspNetCore.Authorization;
+
+[Authorize] 
 [Route("api/passwords")]
 [ApiController]
 public class PasswordController : ControllerBase
+
 {
     private readonly ApplicationDbContext _context;
 
