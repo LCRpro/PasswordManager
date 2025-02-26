@@ -24,7 +24,7 @@
         var token = await AuthService.Login(username, password);
         if (token != null)
         {
-            await localStorage.SetItemAsync("authToken", token); // Utiliser SetItemAsync
+            await localStorage.SetItemAsync("authToken", token); 
             Nav.NavigateTo("/passwords");
         }
         else

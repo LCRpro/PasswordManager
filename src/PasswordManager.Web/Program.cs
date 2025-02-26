@@ -7,10 +7,10 @@ using Blazored.LocalStorage;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
-builder.Services.AddBlazoredLocalStorage(); // Ajoute le service LocalStorage
+builder.Services.AddBlazoredLocalStorage(); 
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5233/api/") });
-builder.Services.AddScoped<AuthService>(); // Service pour l'authentification
-builder.Services.AddScoped<PasswordService>(); // Service pour les mots de passe
+builder.Services.AddScoped<AuthService>(); 
+builder.Services.AddScoped<PasswordService>(); 
 await builder.Build().RunAsync();

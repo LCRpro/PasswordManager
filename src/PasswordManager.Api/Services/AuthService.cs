@@ -49,13 +49,13 @@ private string GenerateJwtToken(User user)
     if (string.IsNullOrEmpty(key) || key.Length < 32)
         throw new Exception("JWT Key is null, missing or too short!");
 
-    var keyBytes = Encoding.UTF8.GetBytes(key); // Convertir la clé en byte[]
+    var keyBytes = Encoding.UTF8.GetBytes(key); 
 
     var tokenDescriptor = new SecurityTokenDescriptor
     {
         Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.Id.ToString()) }),
         Expires = DateTime.UtcNow.AddHours(2),
-        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256) // Utiliser keyBytes
+        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256) 
     };
 
     var tokenHandler = new JwtSecurityTokenHandler();

@@ -23,13 +23,11 @@ public async Task<bool> UpdatePassword(int id, PasswordEntry password, string to
 {
     _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-    Console.WriteLine($"🔄 Envoi de la requête PUT pour modifier le mot de passe ID {id}");
 
     var response = await _http.PutAsJsonAsync($"passwords/{id}", password);
 
     if (!response.IsSuccessStatusCode)
     {
-        Console.WriteLine($"❌ Erreur lors de la modification : {response.StatusCode}");
     }
 
     return response.IsSuccessStatusCode;
