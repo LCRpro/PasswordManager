@@ -9,7 +9,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.Services.AddBlazoredLocalStorage(); 
 builder.RootComponents.Add<HeadOutlet>("head::after");
-
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5233/api/") });
 builder.Services.AddScoped<AuthService>(); 
 builder.Services.AddScoped<PasswordService>(); 

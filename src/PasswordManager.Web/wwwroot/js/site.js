@@ -1,3 +1,11 @@
+window.isOnline = () => navigator.onLine;
+
+window.addOnlineOfflineListeners = (dotNetHelper) => {
+    window.addEventListener("online", () => dotNetHelper.invokeMethodAsync("SetOnlineStatus", true));
+    window.addEventListener("offline", () => dotNetHelper.invokeMethodAsync("SetOnlineStatus", false));
+};
+
+
 function showToast() {
     let toastEl = document.getElementById("notificationToast");
     if (!toastEl) return;
