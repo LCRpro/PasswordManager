@@ -35,21 +35,20 @@ public async Task<bool> UpdatePassword(int id, PasswordEntry password, string to
     return response.IsSuccessStatusCode;
 }
 
-public async Task<bool> AddPassword(PasswordEntry password, string token)
+public async Task<PasswordEntry?> AddPassword(PasswordEntry password, string token)
 {
     _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-    var jsonContent = System.Text.Json.JsonSerializer.Serialize(password);
-
     var response = await _http.PostAsJsonAsync("passwords", password);
 
-    if (!response.IsSuccessStatusCode)
+    if (response.IsSuccessStatusCode)
     {
-        var errorMsg = await response.Content.ReadAsStringAsync();
+        return await response.Content.ReadFromJsonAsync<PasswordEntry>();
     }
 
-    return response.IsSuccessStatusCode;
+    return null;
 }
+
 
 
 
