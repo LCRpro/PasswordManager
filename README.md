@@ -7,7 +7,7 @@
 Ce projet vise à développer une solution Blazor pour un gestionnaire de mots de passe, destiné aux étudiants en enseignement supérieur. Il permettra aux utilisateurs de stocker, gérer et accéder à leurs mots de passe en toute sécurité grâce à une interface conviviale.
 
 ## Fonctionnalités principales
-- **Authentification (3pts)** : Inscription, connexion.
+- ✅**Authentification (3pts)** : Inscription, connexion.
 - ✅**Gestion des mots de passe (2pts)** : Ajouter, modifier et supprimer des mots de passe.
 - ✅**Catégorisation (2pts)** : Organiser les mots de passe par catégorie.
 - ✅**Recherche rapide (2pts)** : Trouver facilement des mots de passe via une barre de recherche.
