@@ -34,4 +34,12 @@ public class AuthController : ControllerBase
 
         return Ok(new { token });
     }
+
+    [HttpPost("logout")]
+public IActionResult Logout()
+{
+   
+    return Ok(new { message = "Déconnexion réussie" });
+}
+
 }

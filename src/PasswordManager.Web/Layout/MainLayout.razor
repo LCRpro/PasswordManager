@@ -1,16 +1,64 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@inject NavigationManager Nav
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="javascript:void(0)">PasswordManager</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                   
+                
+                </ul>
+
+                <ul class="navbar-nav">
+                    @if (isLoggedIn)
+                    {
+                        <li class="nav-item">
+                            <button class="btn btn-outline-danger" @onclick="Logout">🚪 Déconnexion</button>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">🔑 Connexion</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">📝 Inscription</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+        <div class="container">
             @Body
-        </article>
+        </div>
     </main>
-</div>
+
+@code {
+    private bool isLoggedIn = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await localStorage.GetItemAsync<string>("authToken");
+        isLoggedIn = !string.IsNullOrEmpty(token);
+        StateHasChanged(); 
+    }
+
+    private async Task Logout()
+    {
+        await localStorage.RemoveItemAsync("authToken"); 
+        isLoggedIn = false;
+        Nav.NavigateTo("/login", forceLoad: true); 
+    }
+}
