@@ -43,26 +43,28 @@ public class AuthService
 
         return GenerateJwtToken(user);
     }
-private string GenerateJwtToken(User user)
-{
-    var key = _config["Jwt:Key"];
-    if (string.IsNullOrEmpty(key) || key.Length < 32)
-        throw new Exception("JWT Key is null, missing or too short!");
 
-    var keyBytes = Encoding.UTF8.GetBytes(key); 
-
-    var tokenDescriptor = new SecurityTokenDescriptor
+    private string GenerateJwtToken(User user)
     {
-        Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.Id.ToString()) }),
-        Expires = DateTime.UtcNow.AddHours(2),
-        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256) 
-    };
+        var key = _config["Jwt:Key"];
+        if (string.IsNullOrEmpty(key) || key.Length < 32)
+            throw new Exception("JWT Key is null, missing or too short!");
 
-    var tokenHandler = new JwtSecurityTokenHandler();
-    var token = tokenHandler.CreateToken(tokenDescriptor);
-    return tokenHandler.WriteToken(token);
-}
+        var keyBytes = Encoding.UTF8.GetBytes(key);
 
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // 🔥 Ajout de l'ID dans le token
+                new Claim(ClaimTypes.Name, user.Username)
+            }),
+            Expires = DateTime.UtcNow.AddHours(2),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256)
+        };
 
-
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+    }
 }

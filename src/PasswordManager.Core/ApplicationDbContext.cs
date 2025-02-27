@@ -21,4 +21,14 @@ public class ApplicationDbContext : DbContext
             optionsBuilder.UseSqlite("Data Source=passwordmanager.db");
         }
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // 🔥 Relation entre PasswordEntry et User
+        modelBuilder.Entity<PasswordEntry>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }
