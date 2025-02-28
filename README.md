@@ -16,7 +16,7 @@ Ce projet vise à développer une solution Blazor pour un gestionnaire de mots d
 - **Sécurité (3pts)** : Utilisation d’un mot de passe principal pour la décryptage, verrouillage après tentatives échouées.
 - ✅**Générateur de mots de passe (2pts)** : Génération de mots de passe complexes et sécurisés avec critères personnalisables.
 - ✅**Sauvegarde (5pts)** : sur une base de données SQLite.
-- **Interface utilisateur (4pts)** : Simple, intuitive, et responsive avec recherche et filtrage des mots de passe.
+- ✅**Interface utilisateur (4pts)** : Simple, intuitive, et responsive avec recherche et filtrage des mots de passe.
 - **Points bonus (5pts)**: Tests unitaires, et Application mobile
 
 ## Technologies utilisées

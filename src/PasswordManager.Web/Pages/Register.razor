@@ -2,33 +2,97 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager Nav
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 
-<h3>Créer un compte</h3>
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
+        <div class="text-center">
+            <h1 class="text-3xl font-extrabold text-gray-900">Créer un compte</h1>
+            <p class="mt-2 text-sm text-gray-600">
+                Inscrivez-vous pour commencer à utiliser la plateforme.
+            </p>
+        </div>
 
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <p class="text-danger">@errorMessage</p>
-}
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p class="text-sm text-red-600">@errorMessage</p>
+        }
 
-<div>
-    <label>Nom d'utilisateur :</label>
-    <input @bind="username" class="form-control" />
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 4a3 3 0 100 6 3 3 0 000-6zM2 16a6 6 0 1116 0H2z"/>
+                        </svg>
+                    </div>
+                    <input @bind="username"
+                        type="text"
+                        placeholder="Votre nom"
+                        class="block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 8a6 6 0 0112 0v4a6 6 0 01-12 0V8zm6-6a4 4 0 00-4 4v4a4 4 0 008 0V6a4 4 0 00-4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <input @bind="password"
+                        type="password"
+                        placeholder="••••••••"
+                        class="block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 8a6 6 0 0112 0v4a6 6 0 01-12 0V8zm6-6a4 4 0 00-4 4v4a4 4 0 008 0V6a4 4 0 00-4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <input @bind="confirmPassword"
+                        type="password"
+                        placeholder="••••••••"
+                        class="block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm" />
+                </div>
+            </div>
+        </div>
+
+        <button @onclick="RegisterUser"
+            class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition">
+            S'inscrire
+        </button>
+
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Vous avez déjà un compte ? <a href="/login" class="font-medium text-purple-600 hover:text-purple-500">Se connecter</a>
+            </p>
+        </div>
+    </div>
 </div>
-<div>
-    <label>Mot de passe :</label>
-    <input type="password" @bind="password" class="form-control" />
-</div>
-
-<button @onclick="RegisterUser" class="btn btn-primary mt-2">S'inscrire</button>
 
 @code {
     private string username = "";
     private string password = "";
+    private string confirmPassword = "";
     private string errorMessage = "";
 
-    private async Task RegisterUser() // ✅ Nouveau nom pour éviter le conflit
+    private async Task RegisterUser()
     {
         errorMessage = "";
+
+        if (password != confirmPassword)
+        {
+            errorMessage = "Les mots de passe ne correspondent pas.";
+            return;
+        }
 
         var response = await Http.PostAsJsonAsync("auth/register", new
         {
@@ -46,4 +110,3 @@
         }
     }
 }
-
