@@ -19,34 +19,33 @@ public class PasswordController : ControllerBase
         _context = context;
     }
 
-    private int GetUserId()
+    private int? GetUserId()
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-        return userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+    return userIdClaim != null ? int.Parse(userIdClaim.Value) : null;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<PasswordEntry>>> GetPasswords()
-    {
-        int userId = GetUserId();
-        if (userId == 0) return Unauthorized();
 
-        var passwords = await _context.Passwords
-            .Where(p => p.UserId == userId)
-            .ToListAsync();
+[HttpGet]
+public async Task<ActionResult<IEnumerable<PasswordEntry>>> GetPasswords()
+{
+    int? userId = GetUserId();
+    if (userId == null) return Unauthorized(); 
 
-        return Ok(passwords);
-    }
+    var passwords = await _context.Passwords
+        .Where(p => p.UserId == userId.Value) 
+        .ToListAsync();
+
+    return Ok(passwords);
+}
 
 [HttpPost]
 public async Task<ActionResult<PasswordEntry>> AddPassword([FromBody] PasswordEntry password)
 {
-    int userId = GetUserId();
-    if (userId == 0)
-        return Unauthorized();
+    int? userId = GetUserId();
+    if (userId == null) return Unauthorized();
 
-    // 🔥 Associe le mot de passe à l'utilisateur connecté
-    password.UserId = userId;
+    password.UserId = userId.Value;
 
     _context.Passwords.Add(password);
     await _context.SaveChangesAsync();
@@ -54,37 +53,39 @@ public async Task<ActionResult<PasswordEntry>> AddPassword([FromBody] PasswordEn
     return CreatedAtAction(nameof(GetPasswords), new { id = password.Id }, password);
 }
 
+[HttpPut("{id}")]
+public async Task<IActionResult> UpdatePassword(int id, [FromBody] PasswordEntry updatedPassword)
+{
+    int? userId = GetUserId();
+    if (userId == null) return Unauthorized();
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdatePassword(int id, [FromBody] PasswordEntry updatedPassword)
-    {
-        int userId = GetUserId();
-        if (userId == 0) return Unauthorized();
+    var existingPassword = await _context.Passwords.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId.Value);
+    if (existingPassword == null) return NotFound();
 
-        var existingPassword = await _context.Passwords.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
-        if (existingPassword == null) return NotFound();
+    existingPassword.Title = updatedPassword.Title;
+    existingPassword.Username = updatedPassword.Username;
+    existingPassword.EncryptedPassword = updatedPassword.EncryptedPassword;
+    existingPassword.Category = updatedPassword.Category;
+    await _context.SaveChangesAsync();
 
-        existingPassword.Title = updatedPassword.Title;
-        existingPassword.Username = updatedPassword.Username;
-        existingPassword.EncryptedPassword = updatedPassword.EncryptedPassword;
-        existingPassword.Category = updatedPassword.Category;
-        await _context.SaveChangesAsync();
+    return NoContent();
+}
 
-        return NoContent();
-    }
+[HttpDelete("{id}")]
+public async Task<IActionResult> DeletePassword(int id)
+{
+    int? userId = GetUserId();
+    if (userId == null) return Unauthorized();
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeletePassword(int id)
-    {
-        int userId = GetUserId();
-        if (userId == 0) return Unauthorized();
+    var password = await _context.Passwords.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId.Value);
+    if (password == null) return NotFound();
 
-        var password = await _context.Passwords.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
-        if (password == null) return NotFound();
+    _context.Passwords.Remove(password);
+    await _context.SaveChangesAsync();
 
-        _context.Passwords.Remove(password);
-        await _context.SaveChangesAsync();
+    return NoContent();
+}
 
-        return NoContent();
-    }
+
+
 }
