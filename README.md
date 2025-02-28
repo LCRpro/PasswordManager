@@ -9,28 +9,28 @@ Ce projet vise à développer une solution Blazor pour un gestionnaire de mots d
 ## 🏁 Démarrage du projet
 
 ### 1️⃣ Git clone le projet
-
+```
 git clone https://github.com/LCRpro/PasswordManager
-
+```
 ### 1️⃣ Lancer la base de données SQLite
 Si la base de données n'existe pas encore, crée-la avec **Entity Framework Core** :
-
+```
 cd src/PasswordManager.Core
 dotnet ef database update
-
+```
 ### 2️⃣ Lancer l'api
-
+```
 cd src/PasswordManager.Api
 dotnet run
 http://localhost:5233/swagger/index.html
-
+```
 ### 3️⃣ Lancer l'interface Blazor WebAssembly
 Dans un autre terminal : 
-
+```
 cd src/PasswordManager.Web
 dotnet run
 http://localhost:5023
-
+```
 
 
 ## Fonctionnalités principales
